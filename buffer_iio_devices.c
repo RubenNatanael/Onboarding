@@ -107,7 +107,7 @@ int main(int argc, char **argv) {
     tx0_i = iio_device_find_channel(tx, "voltage0", true);
     tx0_q = iio_device_find_channel(tx, "voltage1", true);
 
-    LOG_D("* Enabling IIO streaming channels\n");
+    LOG_D("* Enabling IIO streaming channels");
 	iio_channel_enable(rx0_i);
 	iio_channel_enable(rx0_q);
 	iio_channel_enable(tx0_i);
@@ -116,8 +116,8 @@ int main(int argc, char **argv) {
 
     // Create buffer for input and output data
     LOG_D("Creating buffers");
-    rx_buf = iio_device_create_buffer(rx, 1024*1024, false);
-    tx_buf = iio_device_create_buffer(tx, 1024*1024, false);
+    rx_buf = iio_device_create_buffer(rx, 1024*1024, true);
+    tx_buf = iio_device_create_buffer(tx, 1024*1024, true);
     if (!tx_buf || ! rx_buf) close();
 
 
@@ -126,7 +126,7 @@ int main(int argc, char **argv) {
         LOG_D("Unable to open file");
         close();
     }
-    fprintf(fp, "I,Q,Magnitude,Strength\n");
+    fprintf(fp, "I,Q,Magnitude,Strength");
     while (!stop) {
         size_t nbytes_rx, nbytes_tx;
         char *p_start, *p_end;
@@ -160,6 +160,7 @@ int main(int argc, char **argv) {
             ((int16_t*)p_dat)[0] = 1;
             ((int16_t*)p_dat)[1] = 2;
         }
+        
         nbytes_tx = iio_buffer_push(tx_buf);
         if (nbytes_tx < 0) {
             LOG_D("Error pushing buffer tx");
